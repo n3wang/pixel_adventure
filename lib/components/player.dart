@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
+import 'package:pixel_adventure/components/collision_block.dart';
+import 'package:pixel_adventure/components/utils.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
+import 'package:pixel_adventure/components/custom_hitbox.dart';
 
 enum PlayerState { idle, running, jumping, falling }
 
@@ -22,6 +25,13 @@ class Player extends SpriteAnimationGroupComponent
 
   double horizontalMovement = 0.0;
   bool isFacingRight = true;
+  List<CollisionBlock> collisionBlocks = [];
+  CustomHitbox hitbox = CustomHitbox(
+    offsetX: 10,
+    offsetY: 4,
+    width: 14,
+    height: 28,
+  );
 
   PlayerDirection playerDirection = PlayerDirection.none;
   double moveSpeed = 100.0;
@@ -29,6 +39,7 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   FutureOr<void> onLoad() {
+    debugMode = true;
     _loadAllAnimations();
     return super.onLoad();
   }
@@ -38,6 +49,8 @@ class Player extends SpriteAnimationGroupComponent
     super.update(dt);
     _updatePlayerMovement(dt);
     _updatePlayerState();
+    _checkHorizontalCollisions();
+    // print('update player');
   }
 
   @override
@@ -107,6 +120,24 @@ class Player extends SpriteAnimationGroupComponent
     if (velocity.y < 0) playerState = PlayerState.jumping;
 
     current = playerState;
+  }
+
+  void _checkHorizontalCollisions() {
+    for (final block in collisionBlocks) {
+      // print('block: $block');
+      // handle collision
+      if (!block.isPlatform) {
+        if (checkCollision(this, block)) {
+          // print('collision detected');
+          if (velocity.x > 0) {
+            position.x = block.position.x - width;
+          } else if (velocity.x < 0) {
+            velocity.x = 0;
+            position.x = block.position.x + block.width + width;
+          }
+        }
+      }
+    }
   }
 
   void _updatePlayerMovement(double dt) {
