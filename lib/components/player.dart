@@ -21,7 +21,15 @@ class Player extends SpriteAnimationGroupComponent
 
   late final SpriteAnimation idleAnimation;
   late final SpriteAnimation runAnimation;
+  late final SpriteAnimation jumpAnimation;
+  late final SpriteAnimation fallAnimation;
+
+  bool isOnGround = false;
+  bool hasJumped = false;
   final double stepTime = 0.05;
+  final double _gravity = 9.8;
+  final double _jumpForce = 260;
+  final double _terminalVelocity = 300;
 
   double horizontalMovement = 0.0;
   bool isFacingRight = true;
@@ -50,6 +58,8 @@ class Player extends SpriteAnimationGroupComponent
     _updatePlayerMovement(dt);
     _updatePlayerState();
     _checkHorizontalCollisions();
+    _applyGravity(dt);
+    _checkVerticalCollisions();
     // print('update player');
   }
 
@@ -76,6 +86,7 @@ class Player extends SpriteAnimationGroupComponent
       playerDirection = PlayerDirection.none;
       current = PlayerState.idle;
     }
+    hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
 
     return super.onKeyEvent(event, keysPressed);
   }
@@ -83,9 +94,14 @@ class Player extends SpriteAnimationGroupComponent
   void _loadAllAnimations() {
     idleAnimation = _spriteAnimation('Idle');
     runAnimation = _spriteAnimation('Run');
+    jumpAnimation = _spriteAnimation('Jump', amount: 1);
+    fallAnimation = _spriteAnimation('Fall', amount: 1);
+
     animations = {
       PlayerState.idle: idleAnimation,
       PlayerState.running: runAnimation,
+      PlayerState.jumping: jumpAnimation,
+      PlayerState.falling: fallAnimation,
     };
 
     // Set current animation to idle initially.
@@ -113,10 +129,10 @@ class Player extends SpriteAnimationGroupComponent
     // Check if moving, set running
     if (velocity.x > 0 || velocity.x < 0) playerState = PlayerState.running;
 
-    // check if Falling set to falling
+    // // check if Falling set to falling
     if (velocity.y > 0) playerState = PlayerState.falling;
 
-    // Checks if jumping, set to jumping
+    // // Checks if jumping, set to jumping
     if (velocity.y < 0) playerState = PlayerState.jumping;
 
     current = playerState;
@@ -141,11 +157,53 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   void _updatePlayerMovement(double dt) {
-    // if (hasJumped && isOnGround) _playerJump(dt);
+    if (hasJumped && isOnGround) _playerJump(dt);
 
+    if (velocity.y > _gravity) isOnGround = false;
     // if (velocity.y > _gravity) isOnGround = false; // optional
 
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
+  }
+
+  void _applyGravity(double dt) {
+    velocity.y += _gravity;
+    velocity.y = velocity.y.clamp(-_jumpForce, _terminalVelocity);
+    position.y += velocity.y * dt;
+  }
+
+  void _playerJump(double dt) {
+    velocity.y = -_jumpForce;
+    position.y += velocity.y * dt;
+    isOnGround = false;
+    hasJumped = false;
+  }
+
+  void _checkVerticalCollisions() {
+    for (final block in collisionBlocks) {
+      if (block.isPlatform) {
+        if (checkCollision(this, block)) {
+          if (velocity.y > 0) {
+            velocity.y = 0;
+            position.y = block.y - hitbox.height - hitbox.offsetY;
+            isOnGround = true;
+            break;
+          }
+        }
+      } else {
+        if (checkCollision(this, block)) {
+          if (velocity.y > 0) {
+            velocity.y = 0;
+            position.y = block.y - hitbox.height - hitbox.offsetY;
+            isOnGround = true;
+            break;
+          }
+          if (velocity.y < 0) {
+            velocity.y = 0;
+            position.y = block.y + block.height - hitbox.offsetY;
+          }
+        }
+      }
+    }
   }
 }
