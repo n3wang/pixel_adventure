@@ -2,6 +2,9 @@
 <map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="31">
  <tileset firstgid="1" source="Terrain (16x16).tsx"/>
  <layer id="1" name="Background" width="30" height="20" offsetx="-1.04935" offsety="-0.524676">
+  <properties>
+   <property name="BackgroundColor" value="Gray"/>
+  </properties>
   <data encoding="csv">
 24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,
 24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,
