@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="31">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="36">
  <tileset firstgid="1" source="Terrain (16x16).tsx"/>
  <layer id="1" name="Background" width="30" height="20" offsetx="-1.04935" offsety="-0.524676">
   <properties>
@@ -30,6 +30,10 @@
  </layer>
  <objectgroup id="2" name="SpawnPoints">
   <object id="1" name="Player" type="Player" x="238.583" y="163.333" width="30" height="29.3333"/>
+  <object id="31" name="Bananas" type="Fruit" x="76.3636" y="71.4545" width="36" height="36"/>
+  <object id="33" name="Cherries" type="Fruit" x="177.659" y="70.6818" width="36" height="36"/>
+  <object id="34" name="Kiwi" type="Fruit" x="275.75" y="98.75" width="36" height="36"/>
+  <object id="35" name="Apple" type="Fruit" x="318.5" y="98.5" width="36" height="36"/>
  </objectgroup>
  <objectgroup id="4" name="Collision">
   <object id="11" x="56.6084" y="46.7635" width="372.877" height="6.15309"/>
@@ -43,7 +47,7 @@
   <object id="19" type="Platform" x="176.594" y="111.371" width="45.5329" height="14.7674"/>
   <object id="21" type="Platform" x="176.594" y="142.752" width="45.5329" height="14.7674"/>
   <object id="22" type="Platform" x="176.594" y="175.978" width="45.5329" height="14.7674"/>
-  <object id="23" type="Platform" x="62.7615" y="113.832" width="45.5329" height="14.7674"/>
+  <object id="23" type="Platform" x="64.216" y="113.105" width="45.5329" height="14.7674"/>
   <object id="24" type="Platform" x="60.3002" y="140.906" width="45.5329" height="14.7674"/>
   <object id="28" type="Terrain" x="367.339" y="97.8341" width="30.1501" height="163.057"/>
   <object id="29" name="Platform" x="286.773" y="206.363" width="82.4126" height="55.1432"/>
