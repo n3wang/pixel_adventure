@@ -104,6 +104,7 @@ class Player extends SpriteAnimationGroupComponent
     if (other is Fruit) {
       // print('Fruit collected');
       // other.remove();
+      other.collidingWithPlayer();
     }
 
     super.onCollision(intersectionPoints, other);

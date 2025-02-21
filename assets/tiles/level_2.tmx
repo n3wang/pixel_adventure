@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="36">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="38">
  <tileset firstgid="1" source="Terrain (16x16).tsx"/>
  <layer id="1" name="Background" width="30" height="20" offsetx="-1.04935" offsety="-0.524676">
   <properties>
@@ -34,6 +34,20 @@
   <object id="33" name="Cherries" type="Fruit" x="177.659" y="70.6818" width="36" height="36"/>
   <object id="34" name="Kiwi" type="Fruit" x="275.75" y="98.75" width="36" height="36"/>
   <object id="35" name="Apple" type="Fruit" x="318.5" y="98.5" width="36" height="36"/>
+  <object id="36" name="Top Saw" type="Saw" x="128" y="57.5" width="31.5" height="28.5">
+   <properties>
+    <property name="isVertical" type="bool" value="false"/>
+    <property name="offNeg" type="float" value="8"/>
+    <property name="offPos" type="float" value="2"/>
+   </properties>
+  </object>
+  <object id="37" name="Vertical Saw" type="Saw" x="130.25" y="179.25" width="31.5" height="28.5">
+   <properties>
+    <property name="isVertical" type="bool" value="true"/>
+    <property name="offNeg" type="float" value="5"/>
+    <property name="offPos" type="float" value="0"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="4" name="Collision">
   <object id="11" x="56.6084" y="46.7635" width="372.877" height="6.15309"/>

@@ -4,6 +4,7 @@ import 'package:pixel_adventure/components/background_tile.dart';
 import 'package:pixel_adventure/components/fruit.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
+import 'package:pixel_adventure/components/saw.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 
 class Level extends World with HasGameRef<PixelAdventure> {
@@ -98,6 +99,12 @@ class Level extends World with HasGameRef<PixelAdventure> {
           );
           add(fruit);
           break;
+        case 'Saw':
+          print("spawning saws at ${spawnPoint.x} and ${spawnPoint.y}");
+          final saw = Saw(
+              position: Vector2(spawnPoint.x, spawnPoint.y),
+              size: Vector2(spawnPoint.width, spawnPoint.height));
+          add(saw);
         default:
           break;
       }
