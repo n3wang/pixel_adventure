@@ -4,11 +4,12 @@ import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
 import 'package:pixel_adventure/components/fruit.dart';
+import 'package:pixel_adventure/components/saw.dart';
 import 'package:pixel_adventure/components/utils.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 import 'package:pixel_adventure/components/custom_hitbox.dart';
 
-enum PlayerState { idle, running, jumping, falling }
+enum PlayerState { idle, running, jumping, falling, hit, appearing }
 
 enum PlayerDirection { left, right, none }
 
@@ -25,9 +26,13 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation runAnimation;
   late final SpriteAnimation jumpAnimation;
   late final SpriteAnimation fallAnimation;
+  late final SpriteAnimation hitAnimation;
+  late final SpriteAnimation appearingAnimation;
 
   bool isOnGround = false;
   bool hasJumped = false;
+  bool gotHit = false;
+
   final double stepTime = 0.05;
   final double _gravity = 9.8;
   final double _jumpForce = 260;
@@ -45,12 +50,15 @@ class Player extends SpriteAnimationGroupComponent
 
   PlayerDirection playerDirection = PlayerDirection.none;
   double moveSpeed = 100.0;
+  Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
 
   @override
   FutureOr<void> onLoad() {
     _loadAllAnimations();
     // debugMode = true;
+
+    startingPosition = Vector2(position.x, position.y);
     add(RectangleHitbox(
       position: Vector2(hitbox.offsetX, hitbox.offsetY),
       size: Vector2(hitbox.width, hitbox.height),
@@ -61,13 +69,13 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   void update(double dt) {
-    super.update(dt);
     _updatePlayerMovement(dt);
     _updatePlayerState();
     _checkHorizontalCollisions();
     _applyGravity(dt);
     _checkVerticalCollisions();
     // print('update player');
+    super.update(dt);
   }
 
   @override
@@ -105,22 +113,28 @@ class Player extends SpriteAnimationGroupComponent
       // print('Fruit collected');
       // other.remove();
       other.collidingWithPlayer();
+    } else if (other is Saw) {
+      this._respawn();
     }
 
     super.onCollision(intersectionPoints, other);
   }
 
   void _loadAllAnimations() {
-    idleAnimation = _spriteAnimation('Idle');
-    runAnimation = _spriteAnimation('Run');
+    idleAnimation = _spriteAnimation('Idle', amount: 11);
+    runAnimation = _spriteAnimation('Run', amount: 12);
     jumpAnimation = _spriteAnimation('Jump', amount: 1);
     fallAnimation = _spriteAnimation('Fall', amount: 1);
+    hitAnimation = _spriteAnimation('Hit', amount: 7);
+    appearingAnimation = _spriteAnimation('Appearing', amount: 7);
 
     animations = {
       PlayerState.idle: idleAnimation,
       PlayerState.running: runAnimation,
       PlayerState.jumping: jumpAnimation,
       PlayerState.falling: fallAnimation,
+      PlayerState.hit: hitAnimation,
+      PlayerState.appearing: appearingAnimation,
     };
 
     // Set current animation to idle initially.
@@ -131,6 +145,15 @@ class Player extends SpriteAnimationGroupComponent
     return SpriteAnimation.fromFrameData(
         game.images.fromCache(
           'Main Characters/$character/$state (32x32).png',
+        ),
+        SpriteAnimationData.sequenced(
+            amount: amount, stepTime: stepTime, textureSize: Vector2.all(32)));
+  }
+
+  SpriteAnimation _specialSpriteAnimation(String state, {int amount = 7}) {
+    return SpriteAnimation.fromFrameData(
+        game.images.fromCache(
+          'Main Characters/$state (96x96).png',
         ),
         SpriteAnimationData.sequenced(
             amount: amount, stepTime: stepTime, textureSize: Vector2.all(32)));
@@ -224,5 +247,19 @@ class Player extends SpriteAnimationGroupComponent
         }
       }
     }
+  }
+
+  void _respawn() {
+    const hitDuration = Duration(milliseconds: 350);
+    gotHit = true;
+    current = PlayerState.hit;
+
+    Future.delayed(hitDuration, () {
+      scale.x = 1;
+      position = startingPosition - Vector2.all(32);
+      current = PlayerState.appearing;
+    });
+
+    // position = startingPosition;
   }
 }
