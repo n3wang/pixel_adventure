@@ -29,10 +29,7 @@ class Saw extends SpriteAnimationComponent
     priority = -1;
 
     debugMode = true;
-    add(CircleHitbox(
-        position: position,
-        radius: tileSize / 1,
-        collisionType: CollisionType.passive));
+    add(CircleHitbox());
 
     if (isVertical) {
       rangeNeg = position.y - offNeg * tileSize;

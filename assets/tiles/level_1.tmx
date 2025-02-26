@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="12">
  <tileset firstgid="1" source="Terrain (16x16).tsx"/>
  <layer id="1" name="Background" width="30" height="20">
   <data encoding="csv">
@@ -18,7 +18,7 @@
 24,24,24,111,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,113,24,24,24,
 24,24,24,111,7,8,8,8,8,9,0,0,0,0,0,0,0,7,8,9,7,8,9,0,0,0,113,24,24,24,
 24,24,24,111,29,30,30,30,30,31,0,0,0,0,0,0,0,29,30,31,29,30,31,0,0,0,113,24,24,24,
-24,24,24,111,51,52,52,52,52,53,0,0,0,0,0,0,0,51,52,53,51,52,53,0,0,0,113,24,24,24,
+24,24,24,111,51,52,52,52,52,53,2,2,2,2,2,2,2,51,52,53,51,52,53,0,0,0,113,24,24,24,
 24,24,24,133,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,134,135,24,24,24,
 24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,
 24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,
@@ -27,5 +27,15 @@
  </layer>
  <objectgroup id="2" name="SpawnPoints">
   <object id="3" name="Player" type="Player" x="128.796" y="178.01" width="30.3665" height="28.7958"/>
+  <object id="4" name="Checkpoint" type="Checkpoint" x="305.236" y="144.503" width="66.4921" height="61.2565"/>
+ </objectgroup>
+ <objectgroup id="3" name="Collision">
+  <object id="5" x="49.2147" y="49.2147" width="381.152" height="14.1361"/>
+  <object id="6" x="414.136" y="47.1204" width="17.2775" height="225.131"/>
+  <object id="7" x="48.6911" y="260.733" width="365.969" height="12.5654"/>
+  <object id="8" x="49.2147" y="50.7853" width="12.5654" height="217.277"/>
+  <object id="9" x="61.2565" y="211.518" width="98.9529" height="51.8325"/>
+  <object id="10" x="272.775" y="208.377" width="104.188" height="52.356"/>
+  <object id="11" x="158.639" y="242.408" width="115.707" height="17.2775"/>
  </objectgroup>
 </map>

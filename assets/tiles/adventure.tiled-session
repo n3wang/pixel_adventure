@@ -6,6 +6,7 @@
     "activeFile": "level_2.tmx",
     "expandedProjectPaths": [
     ],
+    "file.lastUsedOpenFilter": "Todos los archivos (*)",
     "fileStates": {
         "/Users/nenewang/flutter/pixel_adventure/assets/maps/Terrain (16x16).tsx": {
             "scaleInDock": 1
@@ -16,32 +17,43 @@
         },
         "level_1.tmx": {
             "expandedObjectLayers": [
+                3,
                 2
             ],
             "scale": 1.91,
-            "selectedLayer": 0,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 239.5287958115183,
-                "y": 160.20942408376965
+                "y": 159.9476439790576
             }
         },
         "level_2.tmx": {
             "expandedObjectLayers": [
                 4
             ],
-            "scale": 1.6252,
+            "scale": 2,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 362.1092788579867,
-                "y": 198.12946098941669
+                "x": 204.25,
+                "y": 199.75
+            }
+        },
+        "level_3.tmx": {
+            "scale": 1.9296875,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 319.99999999999994,
+                "y": 199.77327935222672
             }
         }
     },
     "last.externalTilesetPath": "/Users/nenewang/flutter/pixel_adventure/assets/tiles",
     "last.imagePath": "/Users/nenewang/flutter/pixel_adventure/assets/images/Terrain",
+    "map.height": 25,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
+    "map.width": 40,
     "openFiles": [
         "Terrain (16x16).tsx",
         "level_1.tmx",
@@ -50,9 +62,10 @@
     "project": "adventure.tiled-project",
     "property.type": "float",
     "recentFiles": [
+        "level_3.tmx",
+        "level_2.tmx",
         "Terrain (16x16).tsx",
-        "level_1.tmx",
-        "level_2.tmx"
+        "level_1.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
