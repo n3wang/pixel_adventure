@@ -6,9 +6,12 @@
     "activeFile": "level_2.tmx",
     "expandedProjectPaths": [
     ],
-    "file.lastUsedOpenFilter": "Todos los archivos (*)",
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "/Users/nenewang/flutter/pixel_adventure/assets/maps/Terrain (16x16).tsx": {
+            "scaleInDock": 1
+        },
+        "Pixel Adventure.tsx": {
             "scaleInDock": 1
         },
         "Terrain (16x16).tsx": {
@@ -17,39 +20,42 @@
         },
         "level_1.tmx": {
             "expandedObjectLayers": [
-                3,
                 2
             ],
             "scale": 1.91,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 239.5287958115183,
-                "y": 159.9476439790576
+                "x": 325.39267015706804,
+                "y": 192.40837696335078
             }
         },
         "level_2.tmx": {
             "expandedObjectLayers": [
-                4
+                2
             ],
             "scale": 2,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 204.25,
-                "y": 199.75
+                "x": 299.25,
+                "y": 137.75
             }
         },
         "level_3.tmx": {
+            "expandedObjectLayers": [
+                3,
+                4
+            ],
             "scale": 1.9296875,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 319.99999999999994,
-                "y": 199.77327935222672
+                "y": 152.09716599190284
             }
         }
     },
     "last.externalTilesetPath": "/Users/nenewang/flutter/pixel_adventure/assets/tiles",
     "last.imagePath": "/Users/nenewang/flutter/pixel_adventure/assets/images/Terrain",
-    "map.height": 25,
+    "map.height": 23,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
@@ -60,7 +66,6 @@
         "level_2.tmx"
     ],
     "project": "adventure.tiled-project",
-    "property.type": "float",
     "recentFiles": [
         "level_3.tmx",
         "level_2.tmx",

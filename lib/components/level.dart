@@ -27,34 +27,26 @@ class Level extends World with HasGameRef<PixelAdventure> {
     _scrollingBackground();
     _spawningObjects();
     _addCollisions();
+    // _scaleLevelComponents();
 
     return super.onLoad();
   }
 
   void _scrollingBackground() {
     final backgroundLayer = level.tileMap.getLayer('Background');
-    const tileSize = 64;
-    final numTilesX = (game.size.x / tileSize).ceil();
-    final numTilesY = (game.size.y / tileSize).ceil();
+    // const tileSize = 64.0; // Ensure tileSize is a double
 
     if (backgroundLayer != null) {
       final backgroundColor =
-          backgroundLayer.properties.getValue<String>('Background') ?? 'Gray';
-      for (int y = 0; y < numTilesY; y++) {
-        for (int x = 0; x < numTilesX; x++) {
-          final backgroundTile = BackgroundTile(
-            color: backgroundColor,
-            position:
-                Vector2((x * tileSize) as double, (y * tileSize) as double),
-          );
-          add(backgroundTile);
-        }
-      }
+          backgroundLayer.properties.getValue("BackgroundColor");
+      final backgroundTile = BackgroundTile(
+          color: backgroundColor ?? 'Gray', position: Vector2(0, 0));
+      add(backgroundTile);
     }
   }
 
   void _addCollisions() {
-    final collisionLayer = level.tileMap.getLayer<ObjectGroup>('Collision');
+    final collisionLayer = level.tileMap.getLayer<ObjectGroup>('Collisions');
 
     if (collisionLayer != null) {
       for (final collision in collisionLayer.objects) {
@@ -82,12 +74,13 @@ class Level extends World with HasGameRef<PixelAdventure> {
   }
 
   void _spawningObjects() {
-    final spawnPointsLayer = level.tileMap.getLayer<ObjectGroup>('SpawnPoints');
+    final spawnPointsLayer = level.tileMap.getLayer<ObjectGroup>('Spawnpoints');
 
     for (final spawnPoint in spawnPointsLayer!.objects) {
       // final spawnPoint = spawnPoint as TiledObject;
       switch (spawnPoint.class_) {
         case 'Player':
+          print('Adding Player' + spawnPoint.name);
           player.position = Vector2(spawnPoint.x, spawnPoint.y);
           add(player);
           break;

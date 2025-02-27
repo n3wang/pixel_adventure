@@ -59,6 +59,9 @@ class Player extends SpriteAnimationGroupComponent
     height: 28,
   );
 
+  double fixedDeltaTime = 1 / 60;
+  double accumulatedTime = 0;
+
   PlayerDirection playerDirection = PlayerDirection.none;
   double moveSpeed = 100.0;
   Vector2 startingPosition = Vector2.zero();
@@ -98,7 +101,7 @@ class Player extends SpriteAnimationGroupComponent
 
     final isRightKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyD) ||
         keysPressed.contains(LogicalKeyboardKey.arrowRight);
-    final isJumpKeyPressed = keysPressed.contains(LogicalKeyboardKey.space);
+    // final isJumpKeyPressed = keysPressed.contains(LogicalKeyboardKey.space);
 
     horizontalMovement += isLeftKeyPressed ? -1 : 0;
     horizontalMovement += isRightKeyPressed ? 1 : 0;
@@ -116,17 +119,18 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    // TODO: implement onCollision
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other is Fruit) {
       // print('Fruit collected');
       // other.remove();
       other.collidingWithPlayer();
     } else if (other is Saw) {
+      print('collided with saw');
       this._respawn();
     }
     if (other is Checkpoint && !reachedCheckpoint) _reachedCheckpoint();
-    super.onCollision(intersectionPoints, other);
+    super.onCollisionStart(intersectionPoints, other);
   }
 
   void _loadAllAnimations() {
@@ -134,7 +138,7 @@ class Player extends SpriteAnimationGroupComponent
     runAnimation = _spriteAnimation('Run', amount: 12);
     jumpAnimation = _spriteAnimation('Jump', amount: 1);
     fallAnimation = _spriteAnimation('Fall', amount: 1);
-    hitAnimation = _spriteAnimation('Hit', amount: 7);
+    hitAnimation = _spriteAnimation('Hit', amount: 7)..loop = false;
     appearingAnimation = _specialSpriteAnimation('Appearing', 7);
     dissapearingAnimation = _specialSpriteAnimation('Desappearing', 7);
 
@@ -166,10 +170,10 @@ class Player extends SpriteAnimationGroupComponent
       // game.images.fromCache('Main Characters/$state (96x96).png'),
       game.images.fromCache('Main Characters/$state (96x96).png'),
       SpriteAnimationData.sequenced(
-        amount: amount,
-        stepTime: stepTime,
-        textureSize: Vector2.all(32),
-      ),
+          amount: amount,
+          stepTime: stepTime,
+          textureSize: Vector2.all(32),
+          loop: false),
     );
   }
 
@@ -263,26 +267,25 @@ class Player extends SpriteAnimationGroupComponent
     }
   }
 
-  void _respawn() {
-    const hitDuration = Duration(milliseconds: 350);
-    const appearingDuration = Duration(milliseconds: 350);
+  void _respawn() async {
     const canMoveDuration = Duration(milliseconds: 350);
     gotHit = true;
     current = PlayerState.hit;
 
-    Future.delayed(hitDuration, () {
-      scale.x = 1;
-      // position = startingPosition - Vector2.all(32);
-      current = PlayerState.appearing;
+    await animationTicker?.completed;
+    animationTicker?.reset();
 
-      velocity = Vector2.zero();
-      position = startingPosition;
-      // _updatePlayerState();
-      // Future.delayed(canMoveDuration, () => gotHit = false);
-      gotHit = false;
-    });
+    scale.x = 1;
+    position = startingPosition - Vector2.all(32);
+    current = PlayerState.appearing;
 
-    // position = startingPosition;
+    await animationTicker?.completed;
+    animationTicker?.reset();
+
+    velocity = Vector2.zero();
+    position = startingPosition;
+    _updatePlayerState();
+    Future.delayed(canMoveDuration, () => gotHit = false);
   }
 
   void _reachedCheckpoint() {
@@ -301,7 +304,6 @@ class Player extends SpriteAnimationGroupComponent
 
       const waitToChangeDuration = Duration(seconds: 3);
       Future.delayed(waitToChangeDuration, () {
-        // TODO Switch Level option
         game.loadNextLevel();
       });
     });

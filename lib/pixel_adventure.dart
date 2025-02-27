@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/painting.dart';
+import 'package:pixel_adventure/components/jump_button.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/level.dart';
 
@@ -16,7 +16,6 @@ class PixelAdventure extends FlameGame
   CameraComponent? cam;
   Player player = Player(character: 'Mask Dude');
   late JoystickComponent joystick;
-  bool showJoystick = false;
   List<String> levelNames = ['level_1', 'level_2', 'level_3'];
   int currentLevelIndex = 0;
 
@@ -28,12 +27,11 @@ class PixelAdventure extends FlameGame
   FutureOr<void> onLoad() async {
     // Load all images into cache
     await images.loadAllImages();
-
     _loadLevel();
 
     if (showControls) {
       addJoystick();
-      // add(JumpButton());
+      add(JumpButton());
     }
 
     return super.onLoad();
@@ -49,7 +47,7 @@ class PixelAdventure extends FlameGame
 
   void addJoystick() {
     joystick = JoystickComponent(
-      priority: 10,
+      priority: 20,
       knob: SpriteComponent(
         sprite: Sprite(
           images.fromCache('HUD/Knob.png'),
@@ -98,7 +96,7 @@ class PixelAdventure extends FlameGame
   }
 
   void _loadLevel() {
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 0), () {
       Level world = Level(
         player: player,
         levelName: levelNames[currentLevelIndex],
@@ -110,12 +108,13 @@ class PixelAdventure extends FlameGame
 
       cam = CameraComponent.withFixedResolution(
         world: world,
-        width: 640,
-        height: 360,
+        width: 640, // Adjust the width to fit the screen
+        height: 280, // Adjust the height to fit the screen
       );
       cam!.viewfinder.anchor = Anchor.topLeft;
 
-      addAll([cam!, world]);
+      add(world);
+      add(cam!);
     });
   }
 }
