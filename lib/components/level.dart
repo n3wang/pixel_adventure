@@ -1,10 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flutter/foundation.dart';
 import 'package:pixel_adventure/components/background_tile.dart';
 import 'package:pixel_adventure/components/checkpoint.dart';
 import 'package:pixel_adventure/components/chicken.dart';
 import 'package:pixel_adventure/components/fruit.dart';
+import 'package:pixel_adventure/components/gun.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
 import 'package:pixel_adventure/components/saw.dart';
@@ -12,11 +12,16 @@ import 'package:pixel_adventure/pixel_adventure.dart';
 
 class Level extends World with HasGameRef<PixelAdventure> {
   late TiledComponent level;
-  final Player player;
+  final Player player1;
+  final Player player2;
   final String levelName;
   final List<CollisionBlock> collisionBlocks = [];
+  late Gun gun;
 
-  Level({this.levelName = 'level_1', required this.player});
+  Level(
+      {this.levelName = 'level_1',
+      required this.player1,
+      required this.player2});
 
   @override
   Future<void> onLoad() async {
@@ -30,8 +35,19 @@ class Level extends World with HasGameRef<PixelAdventure> {
     _spawningObjects();
     _addCollisions();
     // _scaleLevelComponents();
-
+    _addGunToPlayer(player1);
+    _addGunToPlayer(player2);
     return super.onLoad();
+  }
+
+  void _addGunToPlayer(Player player) {
+    gun = Gun(
+      position: Vector2(player.hitbox.offsetX,
+          player.hitbox.offsetY), // Adjust position as needed
+      size: Vector2(32, 32),
+    );
+    add(gun);
+    player.attachWeapon(gun);
   }
 
   void _scrollingBackground() {
@@ -72,7 +88,8 @@ class Level extends World with HasGameRef<PixelAdventure> {
         }
       }
     }
-    player.collisionBlocks = collisionBlocks;
+    player1.collisionBlocks = collisionBlocks;
+    player2.collisionBlocks = collisionBlocks;
   }
 
   void _spawningObjects() {
@@ -81,10 +98,15 @@ class Level extends World with HasGameRef<PixelAdventure> {
     for (final spawnPoint in spawnPointsLayer!.objects) {
       // final spawnPoint = spawnPoint as TiledObject;
       switch (spawnPoint.class_) {
-        case 'Player':
-          print('Adding Player' + spawnPoint.name);
-          player.position = Vector2(spawnPoint.x, spawnPoint.y);
-          add(player);
+        case 'Player1':
+          print('Adding Player1' + spawnPoint.name);
+          player1.position = Vector2(spawnPoint.x, spawnPoint.y);
+          add(player1);
+          break;
+        case 'Player2':
+          print('Adding Player2' + spawnPoint.name);
+          player2.position = Vector2(spawnPoint.x, spawnPoint.y);
+          add(player2);
           break;
         case 'Fruit':
           print('Adding Fruit' + spawnPoint.name);

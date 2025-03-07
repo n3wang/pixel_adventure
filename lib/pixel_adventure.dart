@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:pixel_adventure/components/jump_button.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/level.dart';
@@ -14,7 +15,6 @@ class PixelAdventure extends FlameGame
   Color backgroundColor() => const Color(0xFF211F30);
 
   CameraComponent? cam;
-  Player player = Player(character: 'Mask Dude');
   late JoystickComponent joystick;
   List<String> levelNames = ['level_1', 'level_2', 'level_3'];
   int currentLevelIndex = 0;
@@ -69,15 +69,15 @@ class PixelAdventure extends FlameGame
       case JoystickDirection.left:
       case JoystickDirection.upLeft:
       case JoystickDirection.downLeft:
-        player.horizontalMovement = -1;
+        player1.horizontalMovement = -1;
         break;
       case JoystickDirection.right:
       case JoystickDirection.upRight:
       case JoystickDirection.downRight:
-        player.horizontalMovement = 1;
+        player1.horizontalMovement = 1;
         break;
       default:
-        player.horizontalMovement = 0;
+        player1.horizontalMovement = 0;
         break;
     }
   }
@@ -95,10 +95,25 @@ class PixelAdventure extends FlameGame
     }
   }
 
+  final player1 = Player(
+    leftKey: LogicalKeyboardKey.keyA,
+    rightKey: LogicalKeyboardKey.keyD,
+    jumpKey: LogicalKeyboardKey.space,
+    position: Vector2(100, 100),
+  );
+
+  final player2 = Player(
+    leftKey: LogicalKeyboardKey.arrowLeft,
+    rightKey: LogicalKeyboardKey.arrowRight,
+    jumpKey: LogicalKeyboardKey.arrowUp,
+    position: Vector2(200, 100),
+  );
+
   void _loadLevel() {
     Future.delayed(const Duration(seconds: 0), () {
       Level world = Level(
-        player: player,
+        player1: player1,
+        player2: player2,
         levelName: levelNames[currentLevelIndex],
       );
 

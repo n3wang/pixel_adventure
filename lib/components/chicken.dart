@@ -41,7 +41,7 @@ class Chicken extends SpriteAnimationGroupComponent
   @override
   FutureOr<void> onLoad() {
     // debugMode = true;
-    player = game.player;
+    player = game.player1;
 
     debugMode = true;
     add(

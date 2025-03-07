@@ -62,6 +62,7 @@ flutter:
   - assets/audio/
   - assets/tiles/
   - assets/images/
+  - assets/images/Items/Misc/
   - assets/images/Items/Checkpoints/Checkpoint/
   - assets/images/Items/Checkpoints/Checkpoint/Checkpoint (No Flag).png
   - assets/images/Items/Checkpoints/Checkpoint/Checkpoint (Flag Out) (64x64).png

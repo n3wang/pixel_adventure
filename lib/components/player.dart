@@ -9,6 +9,7 @@ import 'package:pixel_adventure/components/collision_block.dart';
 import 'package:pixel_adventure/components/fruit.dart';
 import 'package:pixel_adventure/components/saw.dart';
 import 'package:pixel_adventure/components/utils.dart';
+import 'package:pixel_adventure/components/weapon.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 import 'package:pixel_adventure/components/custom_hitbox.dart';
 
@@ -27,8 +28,15 @@ enum PlayerDirection { left, right, none }
 class Player extends SpriteAnimationGroupComponent
     with HasGameRef<PixelAdventure>, KeyboardHandler, CollisionCallbacks {
   late String character;
+  Weapon? weapon;
+  final LogicalKeyboardKey leftKey;
+  final LogicalKeyboardKey rightKey;
+  final LogicalKeyboardKey jumpKey;
 
   Player({
+    required this.leftKey,
+    required this.rightKey,
+    required this.jumpKey,
     position,
     this.character = 'Ninja Frog',
   }) : super(position: position);
@@ -92,18 +100,36 @@ class Player extends SpriteAnimationGroupComponent
       _applyGravity(dt);
       _checkVerticalCollisions();
     }
+
+    // Update weapon position
+    if (weapon != null) {
+      weapon!.position = Vector2(this.hitbox.offsetX,
+          this.hitbox.offsetY); // Adjust position as needed
+    }
     super.update(dt);
+  }
+
+  void attachWeapon(Weapon newWeapon) {
+    if (weapon != null) {
+      remove(weapon!);
+    }
+    weapon = newWeapon;
+    add(weapon!);
+  }
+
+  void detachWeapon() {
+    if (weapon != null) {
+      remove(weapon!);
+      weapon = null;
+    }
   }
 
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     horizontalMovement = 0;
-    final isLeftKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyA) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowLeft);
-
-    final isRightKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyD) ||
-        keysPressed.contains(LogicalKeyboardKey.arrowRight);
-    // final isJumpKeyPressed = keysPressed.contains(LogicalKeyboardKey.space);
+    final isLeftKeyPressed = keysPressed.contains(leftKey);
+    final isRightKeyPressed = keysPressed.contains(rightKey);
+    hasJumped = keysPressed.contains(jumpKey);
 
     horizontalMovement += isLeftKeyPressed ? -1 : 0;
     horizontalMovement += isRightKeyPressed ? 1 : 0;
@@ -115,7 +141,6 @@ class Player extends SpriteAnimationGroupComponent
     } else if (isRightKeyPressed) {
       playerDirection = PlayerDirection.right;
     }
-    hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
 
     return super.onKeyEvent(event, keysPressed);
   }
@@ -169,7 +194,6 @@ class Player extends SpriteAnimationGroupComponent
 
   SpriteAnimation _specialSpriteAnimation(String state, int amount) {
     return SpriteAnimation.fromFrameData(
-      // game.images.fromCache('Main Characters/$state (96x96).png'),
       game.images.fromCache('Main Characters/$state (96x96).png'),
       SpriteAnimationData.sequenced(
           amount: amount,
@@ -202,11 +226,8 @@ class Player extends SpriteAnimationGroupComponent
 
   void _checkHorizontalCollisions() {
     for (final block in collisionBlocks) {
-      // print('block: $block');
-      // handle collision
       if (!block.isPlatform) {
         if (checkCollision(this, block)) {
-          // print('collision detected');
           if (velocity.x > 0) {
             position.x = block.position.x - width;
           } else if (velocity.x < 0) {
@@ -222,7 +243,6 @@ class Player extends SpriteAnimationGroupComponent
     if (hasJumped && isOnGround) _playerJump(dt);
 
     if (velocity.y > _gravity) isOnGround = false;
-    // if (velocity.y > _gravity) isOnGround = false; // optional
 
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
