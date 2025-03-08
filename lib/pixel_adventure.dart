@@ -99,6 +99,7 @@ class PixelAdventure extends FlameGame
     leftKey: LogicalKeyboardKey.keyA,
     rightKey: LogicalKeyboardKey.keyD,
     jumpKey: LogicalKeyboardKey.space,
+    fireKey: LogicalKeyboardKey.shiftLeft,
     position: Vector2(100, 100),
   );
 
@@ -106,6 +107,7 @@ class PixelAdventure extends FlameGame
     leftKey: LogicalKeyboardKey.arrowLeft,
     rightKey: LogicalKeyboardKey.arrowRight,
     jumpKey: LogicalKeyboardKey.arrowUp,
+    fireKey: LogicalKeyboardKey.shiftRight,
     position: Vector2(200, 100),
   );
 

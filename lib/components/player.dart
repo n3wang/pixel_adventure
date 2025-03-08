@@ -7,11 +7,13 @@ import 'package:pixel_adventure/components/checkpoint.dart';
 import 'package:pixel_adventure/components/chicken.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
 import 'package:pixel_adventure/components/fruit.dart';
+import 'package:pixel_adventure/components/gun.dart';
 import 'package:pixel_adventure/components/saw.dart';
 import 'package:pixel_adventure/components/utils.dart';
 import 'package:pixel_adventure/components/weapon.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 import 'package:pixel_adventure/components/custom_hitbox.dart';
+import 'package:pixel_adventure/components/level.dart';
 
 enum PlayerState {
   idle,
@@ -32,11 +34,16 @@ class Player extends SpriteAnimationGroupComponent
   final LogicalKeyboardKey leftKey;
   final LogicalKeyboardKey rightKey;
   final LogicalKeyboardKey jumpKey;
+  final LogicalKeyboardKey fireKey;
+  Level? level;
+  List<Weapon?> inventory = List.filled(10, null); // Inventory with 10 slots
 
   Player({
     required this.leftKey,
     required this.rightKey,
     required this.jumpKey,
+    required this.fireKey,
+    this.level,
     position,
     this.character = 'Ninja Frog',
   }) : super(position: position);
@@ -80,6 +87,11 @@ class Player extends SpriteAnimationGroupComponent
   @override
   FutureOr<void> onLoad() {
     _loadAllAnimations();
+
+    inventory[0] = Gun(
+      position: position + Vector2(0, 0), // Adjust position as needed
+      size: Vector2(32, 32),
+    );
     debugMode = true;
 
     startingPosition = Vector2(position.x, position.y);
@@ -87,6 +99,11 @@ class Player extends SpriteAnimationGroupComponent
       position: Vector2(hitbox.offsetX, hitbox.offsetY),
       size: Vector2(hitbox.width, hitbox.height),
     ));
+
+    // Check inventory and attach weapon if in slot 1
+    if (inventory[0] != null) {
+      attachWeapon(inventory[0]!);
+    }
 
     return super.onLoad();
   }
@@ -103,8 +120,8 @@ class Player extends SpriteAnimationGroupComponent
 
     // Update weapon position
     if (weapon != null) {
-      weapon!.position = Vector2(this.hitbox.offsetX,
-          this.hitbox.offsetY); // Adjust position as needed
+      final weaponOffset = isFacingRight ? Vector2(10, 0) : Vector2(-10, 0);
+      weapon!.position = position + weaponOffset; // Adjust position as needed
     }
     super.update(dt);
   }
@@ -114,7 +131,8 @@ class Player extends SpriteAnimationGroupComponent
       remove(weapon!);
     }
     weapon = newWeapon;
-    add(weapon!);
+    // add(weapon!);
+    level!.add(weapon!);
   }
 
   void detachWeapon() {
@@ -129,6 +147,8 @@ class Player extends SpriteAnimationGroupComponent
     horizontalMovement = 0;
     final isLeftKeyPressed = keysPressed.contains(leftKey);
     final isRightKeyPressed = keysPressed.contains(rightKey);
+    final isShootKeyPressed = keysPressed.contains(fireKey);
+
     hasJumped = keysPressed.contains(jumpKey);
 
     horizontalMovement += isLeftKeyPressed ? -1 : 0;
@@ -142,6 +162,9 @@ class Player extends SpriteAnimationGroupComponent
       playerDirection = PlayerDirection.right;
     }
 
+    if (isShootKeyPressed) {
+      level!.shoot(this);
+    }
     return super.onKeyEvent(event, keysPressed);
   }
 
@@ -208,8 +231,16 @@ class Player extends SpriteAnimationGroupComponent
 
     if (velocity.x < 0 && scale.x > 0) {
       flipHorizontallyAroundCenter();
+      isFacingRight = false;
+      if (weapon != null) {
+        weapon!.flipHorizontallyAroundCenter();
+      }
     } else if (velocity.x > 0 && scale.x < 0) {
       flipHorizontallyAroundCenter();
+      isFacingRight = true;
+      if (weapon != null) {
+        weapon!.flipHorizontallyAroundCenter();
+      }
     }
 
     // Check if moving, set running
