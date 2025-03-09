@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixel_adventure/components/character.dart';
 import 'package:pixel_adventure/components/character_mixin.dart';
@@ -238,9 +240,25 @@ class Player extends CharacterComponent
   @override
   void reduceLife(int amount) {
     if (!gotHit) {
-      // _respawn();
+      paint.color = Colors.green; // Initial hit indicator
+
+      // Play hit sound
+      if (game.playSounds) {
+        FlameAudio.play('hit.wav', volume: game.soundVolume);
+      }
+
+      // Apply a color effect instead of manually changing the color
+      final colorEffect = ColorEffect(
+        Colors.red,
+        EffectController(
+            duration: 0.2, alternate: true), // Quickly flash red and back
+      );
+
+      add(colorEffect); // Attach effect to the component
+
       life -= amount;
-      print("life health points $life of max amount $maxLife");
+      print("Life health points $life of max amount $maxLife");
+
       if (life <= 0) {
         _respawn();
       }

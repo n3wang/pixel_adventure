@@ -40,7 +40,7 @@ class Level extends World with HasGameRef<PixelAdventure> {
     _initializePlayerInventory(player1);
     _initializePlayerInventory(player2);
 
-    add(UIComponent(player1: player1));
+    add(UIComponent(player1: player1, player2: player2));
     return super.onLoad();
   }
 
