@@ -3,6 +3,8 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
+import 'package:pixel_adventure/components/character.dart';
+import 'package:pixel_adventure/components/character_mixin.dart';
 import 'package:pixel_adventure/components/checkpoint.dart';
 import 'package:pixel_adventure/components/chicken.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
@@ -27,8 +29,12 @@ enum PlayerState {
 
 enum PlayerDirection { left, right, none }
 
-class Player extends SpriteAnimationGroupComponent
-    with HasGameRef<PixelAdventure>, KeyboardHandler, CollisionCallbacks {
+class Player extends CharacterComponent
+    with
+        HasGameRef<PixelAdventure>,
+        KeyboardHandler,
+        CollisionCallbacks,
+        CharacterMixin {
   late String character;
   Weapon? weapon;
   final LogicalKeyboardKey leftKey;
@@ -224,6 +230,13 @@ class Player extends SpriteAnimationGroupComponent
           textureSize: Vector2.all(32),
           loop: false),
     );
+  }
+
+  @override
+  void reduceLife(int amount) {
+    if (!gotHit) {
+      _respawn();
+    }
   }
 
   void _updatePlayerState() {

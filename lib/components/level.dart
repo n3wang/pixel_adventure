@@ -56,6 +56,7 @@ class Level extends World with HasGameRef<PixelAdventure> {
             player.isFacingRight ? player.hitbox.width : -player.hitbox.width,
             player.hitbox.height / 2);
     final bullet = Bullet(
+      shooterId: player.id,
       position: bulletPosition,
       direction: direction,
       speed: 300,
