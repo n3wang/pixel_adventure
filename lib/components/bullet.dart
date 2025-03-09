@@ -1,8 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
 import 'package:pixel_adventure/components/character.dart';
-import 'package:pixel_adventure/components/character_mixin.dart';
-import 'package:pixel_adventure/components/player.dart';
 
 class Bullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
   final Vector2 direction;
@@ -45,8 +43,8 @@ class Bullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
       if (other.id == shooterId) {
         return; // Ignore collision with the shooter
       }
-      other.reduceLife(1); // Reduce life by 1 or any other amount
-      removeFromParent(); // Remove bullet after hitting a character
+      other.reduceLife(1);
+      removeFromParent();
     }
     super.onCollision(intersectionPoints, other);
   }

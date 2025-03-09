@@ -1,21 +1,22 @@
 import 'dart:math';
-
 import 'package:flame/components.dart';
 
 class CharacterComponent extends SpriteAnimationGroupComponent {
   late int id;
   late int life;
+  late int maxLife = 3;
 
   CharacterComponent({
     required Vector2 position,
-    lifeHealth = 1,
+    int initialLife = 1,
   }) : super(position: position) {
-    initializeCharacter(lifeHealth);
+    initializeCharacter(initialLife);
   }
 
   void initializeCharacter(int initialLife) {
     id = _generateRandomId();
     life = initialLife;
+    maxLife = initialLife;
   }
 
   int _generateRandomId() {

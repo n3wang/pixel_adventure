@@ -12,4 +12,18 @@ class Weapon extends SpriteComponent {
     sprite = await Sprite.load('Items/Misc/gun.png');
     return super.onLoad();
   }
+
+  bool canUse() {
+    // Implement in subclasses
+    return true;
+  }
+
+  void use() {
+    // Implement in subclasses
+  }
+
+  String messageInUI() {
+    // Implement in subclasses
+    return '';
+  }
 }

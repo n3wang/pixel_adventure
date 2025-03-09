@@ -52,7 +52,7 @@ class Player extends CharacterComponent
     this.level,
     position,
     this.character = 'Ninja Frog',
-  }) : super(position: position);
+  }) : super(position: position, initialLife: 3);
 
   late final SpriteAnimation idleAnimation;
   late final SpriteAnimation runAnimation;
@@ -169,7 +169,10 @@ class Player extends CharacterComponent
     }
 
     if (isShootKeyPressed) {
-      level!.shoot(this);
+      if (this.weapon != null && this.weapon!.canUse()) {
+        this.weapon!.use();
+        level!.shoot(this);
+      }
     }
     return super.onKeyEvent(event, keysPressed);
   }
@@ -235,7 +238,12 @@ class Player extends CharacterComponent
   @override
   void reduceLife(int amount) {
     if (!gotHit) {
-      _respawn();
+      // _respawn();
+      life -= amount;
+      print("life health points $life of max amount $maxLife");
+      if (life <= 0) {
+        _respawn();
+      }
     }
   }
 
@@ -355,6 +363,7 @@ class Player extends CharacterComponent
     velocity = Vector2.zero();
     position = startingPosition;
     _updatePlayerState();
+    life = maxLife;
     Future.delayed(canMoveDuration, () => gotHit = false);
   }
 

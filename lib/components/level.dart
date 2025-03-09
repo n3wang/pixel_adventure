@@ -9,6 +9,7 @@ import 'package:pixel_adventure/components/gun.dart';
 import 'package:pixel_adventure/components/player.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
 import 'package:pixel_adventure/components/saw.dart';
+import 'package:pixel_adventure/components/ui_component.dart';
 import 'package:pixel_adventure/pixel_adventure.dart';
 
 class Level extends World with HasGameRef<PixelAdventure> {
@@ -38,6 +39,8 @@ class Level extends World with HasGameRef<PixelAdventure> {
     // _scaleLevelComponents();
     _initializePlayerInventory(player1);
     _initializePlayerInventory(player2);
+
+    add(UIComponent(player1: player1));
     return super.onLoad();
   }
 
