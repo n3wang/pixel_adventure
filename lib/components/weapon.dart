@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 
 class Weapon extends SpriteComponent {
+  double onHitDamage = 1;
   Weapon({
     required Vector2 position,
     required Vector2 size,
@@ -22,8 +23,16 @@ class Weapon extends SpriteComponent {
     // Implement in subclasses
   }
 
+  void weaponSpecial() {
+    // Usually reload.
+  }
+
   String messageInUI() {
     // Implement in subclasses
     return '';
+  }
+
+  double getDamage() {
+    return onHitDamage;
   }
 }

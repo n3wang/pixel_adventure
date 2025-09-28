@@ -3,11 +3,22 @@ import 'package:pixel_adventure/components/weapon.dart';
 
 class Gun extends Weapon {
   int bulletCount = 10;
-  int magazineCount;
+
+  int maxBullets;
+  int magazinesCount = 0;
+  bool isReloading = false;
+  int reloadingTime = 2;
+
+  @override
+  // ignore: overridden_fields
+  double onHitDamage = 2;
+
   Gun({
     required Vector2 position,
     required Vector2 size,
-    this.magazineCount = 10,
+    this.maxBullets = 10,
+    this.magazinesCount = 3,
+    this.onHitDamage = 2,
   }) : super(position: position, size: size);
 
   @override
@@ -26,7 +37,10 @@ class Gun extends Weapon {
 
   @override
   String messageInUI() {
-    return 'Bullets: $bulletCount/$magazineCount';
+    if (isReloading) {
+      return 'Reloading.. | Mag: $magazinesCount';
+    }
+    return 'Bul: $bulletCount/$maxBullets | Mag: $magazinesCount';
   }
 
   @override
@@ -34,13 +48,25 @@ class Gun extends Weapon {
     return bulletCount > 0;
   }
 
+  @override
+  void weaponSpecial() {
+    reload(maxBullets);
+  }
+
   void shoot() {
-    if (bulletCount > 0) {
+    if (bulletCount > 0 && !isReloading) {
       bulletCount--;
     }
   }
 
-  void reload(int bullets) {
-    bulletCount += bullets;
+  void reload(int bullets) async {
+    if (magazinesCount > 0) {
+      isReloading = true;
+      // Add a delay before reloading
+      await Future.delayed(Duration(seconds: reloadingTime));
+      isReloading = false;
+      magazinesCount--;
+      bulletCount = maxBullets;
+    }
   }
 }

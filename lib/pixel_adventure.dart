@@ -96,18 +96,23 @@ class PixelAdventure extends FlameGame
   }
 
   final player1 = Player(
-    leftKey: LogicalKeyboardKey.keyA,
-    rightKey: LogicalKeyboardKey.keyD,
-    jumpKey: LogicalKeyboardKey.space,
-    fireKey: LogicalKeyboardKey.shiftLeft,
-    position: Vector2(100, 100),
-  );
+      leftKey: LogicalKeyboardKey.keyA,
+      rightKey: LogicalKeyboardKey.keyD,
+      jumpKey: LogicalKeyboardKey.space,
+      fireKey: LogicalKeyboardKey.shiftLeft,
+      position: Vector2(100, 100),
+      inventory1: LogicalKeyboardKey.digit1,
+      inventory2: LogicalKeyboardKey.digit2,
+      inventory3: LogicalKeyboardKey.digit3);
 
   final player2 = Player(
     leftKey: LogicalKeyboardKey.arrowLeft,
     rightKey: LogicalKeyboardKey.arrowRight,
     jumpKey: LogicalKeyboardKey.arrowUp,
     fireKey: LogicalKeyboardKey.shiftRight,
+    inventory1: LogicalKeyboardKey.numpad1,
+    inventory2: LogicalKeyboardKey.numpad2,
+    inventory3: LogicalKeyboardKey.numpad3,
     position: Vector2(200, 100),
   );
 

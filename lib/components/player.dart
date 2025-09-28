@@ -6,7 +6,6 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixel_adventure/components/character.dart';
-import 'package:pixel_adventure/components/character_mixin.dart';
 import 'package:pixel_adventure/components/checkpoint.dart';
 import 'package:pixel_adventure/components/chicken.dart';
 import 'package:pixel_adventure/components/collision_block.dart';
@@ -32,17 +31,17 @@ enum PlayerState {
 enum PlayerDirection { left, right, none }
 
 class Player extends CharacterComponent
-    with
-        HasGameRef<PixelAdventure>,
-        KeyboardHandler,
-        CollisionCallbacks,
-        CharacterMixin {
+    with HasGameRef<PixelAdventure>, KeyboardHandler, CollisionCallbacks {
   late String character;
   Weapon? weapon;
   final LogicalKeyboardKey leftKey;
   final LogicalKeyboardKey rightKey;
   final LogicalKeyboardKey jumpKey;
   final LogicalKeyboardKey fireKey;
+  final LogicalKeyboardKey inventory1;
+  final LogicalKeyboardKey inventory2;
+  final LogicalKeyboardKey inventory3;
+
   Level? level;
   List<Weapon?> inventory = List.filled(10, null); // Inventory with 10 slots
 
@@ -51,6 +50,9 @@ class Player extends CharacterComponent
     required this.rightKey,
     required this.jumpKey,
     required this.fireKey,
+    required this.inventory1,
+    required this.inventory2,
+    required this.inventory3,
     this.level,
     position,
     this.character = 'Ninja Frog',
@@ -92,6 +94,9 @@ class Player extends CharacterComponent
   Vector2 startingPosition = Vector2.zero();
   Vector2 velocity = Vector2.zero();
 
+  int inventoryIndex = 0;
+  int max_inventory = 3;
+
   @override
   FutureOr<void> onLoad() {
     _loadAllAnimations();
@@ -107,13 +112,36 @@ class Player extends CharacterComponent
       position: Vector2(hitbox.offsetX, hitbox.offsetY),
       size: Vector2(hitbox.width, hitbox.height),
     ));
-
-    // Check inventory and attach weapon if in slot 1
-    if (inventory[0] != null) {
-      attachWeapon(inventory[0]!);
-    }
+    attachWeapon(inventory[0]!);
+    handleInventoryIndexChange(0);
 
     return super.onLoad();
+  }
+
+  void handleInventoryIndexChange(int newIndex) {
+    print(
+        "New index $newIndex what is in the inventory ${inventory[newIndex]}");
+    if (newIndex + 1 > max_inventory ||
+        inventory[newIndex] == null ||
+        inventoryIndex < 0) {
+      return;
+    }
+    if (newIndex == inventoryIndex) {
+      if (isWeaponEquipedInCurrentSlot()) {
+        weapon!.weaponSpecial();
+      }
+      return;
+    }
+
+    if (inventory[newIndex] != null) {
+      detachWeapon();
+      attachWeapon(inventory[newIndex]!);
+    }
+    inventoryIndex = newIndex;
+  }
+
+  bool isWeaponEquipedInCurrentSlot() {
+    return this.weapon != null;
   }
 
   @override
@@ -153,9 +181,15 @@ class Player extends CharacterComponent
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     horizontalMovement = 0;
+
+    // print("Keys pressed $keysPressed");
     final isLeftKeyPressed = keysPressed.contains(leftKey);
     final isRightKeyPressed = keysPressed.contains(rightKey);
     final isShootKeyPressed = keysPressed.contains(fireKey);
+
+    final isInventory1KeyPressed = keysPressed.contains(inventory1);
+    final isInventory2KeyPressed = keysPressed.contains(inventory2);
+    final isInventory3KeyPressed = keysPressed.contains(inventory3);
 
     hasJumped = keysPressed.contains(jumpKey);
 
@@ -168,10 +202,16 @@ class Player extends CharacterComponent
       playerDirection = PlayerDirection.left;
     } else if (isRightKeyPressed) {
       playerDirection = PlayerDirection.right;
+    } else if (isInventory1KeyPressed) {
+      handleInventoryIndexChange(0);
+    } else if (isInventory2KeyPressed) {
+      handleInventoryIndexChange(1);
+    } else if (isInventory3KeyPressed) {
+      handleInventoryIndexChange(2);
     }
 
     if (isShootKeyPressed) {
-      if (this.weapon != null && this.weapon!.canUse()) {
+      if (isWeaponEquipedInCurrentSlot() && this.weapon!.canUse()) {
         this.weapon!.use();
         level!.shoot(this);
       }
@@ -271,24 +311,20 @@ class Player extends CharacterComponent
     if (velocity.x < 0 && scale.x > 0) {
       flipHorizontallyAroundCenter();
       isFacingRight = false;
-      if (weapon != null) {
+      if (isWeaponEquipedInCurrentSlot()) {
         weapon!.flipHorizontallyAroundCenter();
       }
     } else if (velocity.x > 0 && scale.x < 0) {
       flipHorizontallyAroundCenter();
       isFacingRight = true;
-      if (weapon != null) {
+      if (isWeaponEquipedInCurrentSlot()) {
         weapon!.flipHorizontallyAroundCenter();
       }
     }
 
     // Check if moving, set running
     if (velocity.x > 0 || velocity.x < 0) playerState = PlayerState.running;
-
-    // // check if Falling set to falling
     if (velocity.y > 0) playerState = PlayerState.falling;
-
-    // // Checks if jumping, set to jumping
     if (velocity.y < 0) playerState = PlayerState.jumping;
 
     current = playerState;

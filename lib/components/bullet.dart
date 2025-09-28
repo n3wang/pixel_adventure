@@ -8,6 +8,7 @@ class Bullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
   final double lifetime; // Lifetime of the bullet in seconds
   final int shooterId; // ID of the shooter to avoid self-collision
   late Timer _timer;
+  double damage = 1;
 
   Bullet({
     required Vector2 position,
@@ -44,8 +45,8 @@ class Bullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
         return; // Ignore collision with the shooter
       }
       other.reduceLife(1);
-      removeFromParent();
     }
+    removeFromParent();
     super.onCollision(intersectionPoints, other);
   }
 }
